@@ -38,10 +38,7 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
   partner_id      = var.partner_id
-  use_msi         = var.use_msi
-
   features {}
 }
 

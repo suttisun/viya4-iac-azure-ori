@@ -1,11 +1,3 @@
-
-variable subscription_id {}
-variable use_msi {
-  description = "Use Managed Identity for Authentication (Azure VMs only)"
-  type        = bool
-  default     = false
-}
-
 variable "iac_tooling" {
   description = "Value used to identify the tooling used to generate this providers infrastructure."
   type        = string
