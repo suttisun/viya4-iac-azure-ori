@@ -110,21 +110,3 @@ output "rwx_filestore_endpoint" {
 output "rwx_filestore_path" {
   value = var.storage_type != "dev" ? coalesce(module.netapp.netapp_path, "/export") : null
 }
-
-output "rwx_filestore_config" {
-  value = var.storage_type == "ha" ? jsonencode({
-    "version" : 1,
-    "storageDriverName" : "azure-netapp-files",
-    "subscriptionID" : split("/", data.azurerm_subscription.current.id)[2],
-    "tenantID" : data.azurerm_subscription.current.tenant_id,
-    "clientID" : var.client_id,
-    "clientSecret" : var.client_secret,
-    "location" : azurerm_resource_group.azure_rg.location,
-    "serviceLevel" : var.netapp_service_level,
-    "virtualNetwork" : module.vnet.vnet_name,
-    "subnet" : module.netapp.netapp_subnet,
-    "defaults" : {
-      "exportRule" : local.vnet_cidr_block,
-    }
-  }) : null
-}
