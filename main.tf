@@ -8,7 +8,7 @@ terraform {
     }
     azureread = {
       source  = "hashicorp/azuread"
-      version = ">= 1.1.1"
+      version = "~> 1.1.1"
     }
     external = {
       source  = "hashicorp/external"
