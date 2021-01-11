@@ -1,13 +1,5 @@
-variable client_id {
-  default = ""
-}
-variable client_secret {
-  default = ""
-}
-variable subscription_id {}
-variable tenant_id {
 
-}
+variable subscription_id {}
 variable use_msi {
   description = "Use Managed Identity for Authentication (Azure VMs only)"
   type        = bool
