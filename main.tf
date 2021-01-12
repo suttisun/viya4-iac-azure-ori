@@ -39,17 +39,12 @@ terraform {
 
 provider "azurerm" {
   partner_id      = var.partner_id
-  client_id       = var.client_id
   features {}
 }
 
-provider "azuread" {
-  client_id       = var.client_id
-}
-
+provider "azuread" {}
 
 data "azurerm_subscription" "current" {}
-
 
 resource "tls_private_key" "private_key" {
   count     = var.ssh_public_key == "" ? 1 : 0
