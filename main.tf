@@ -39,10 +39,13 @@ terraform {
 
 provider "azurerm" {
   partner_id      = var.partner_id
+  client_id       = var.client_id
   features {}
 }
 
-provider "azuread" {}
+provider "azuread" {
+  client_id       = var.client_id
+}
 
 
 data "azurerm_subscription" "current" {}
