@@ -4,6 +4,10 @@ variable "iac_tooling" {
   default     = "terraform"
 }
 
+variable "client_id" {
+  default = ""
+}
+
 variable "partner_id" {
   description = "A GUID/UUID that is registered with Microsoft to facilitate partner resource usage attribution"
   type        = string
