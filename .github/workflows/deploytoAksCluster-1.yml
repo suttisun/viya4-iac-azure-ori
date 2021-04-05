@@ -1,0 +1,51 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: aks01reg.azurecr.io
+        username: ${{ secrets.acr_aks01reg_username }}
+        password: ${{ secrets.acr_aks01reg_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/" -f  "Dockerfile" -t aks01reg.azurecr.io/aks01:${{ github.sha }} --label dockerfile-path=Dockerfile
+        docker push aks01reg.azurecr.io/aks01:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_aks01_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep aks-01ad74 | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace aks-01ad74`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: aks-01ad74
+        container-registry-url: aks01reg.azurecr.io
+        container-registry-username: ${{ secrets.acr_aks01reg_username }}
+        container-registry-password: ${{ secrets.acr_aks01reg_password }}
+        secret-name: aks01dockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: aks-01ad74
+        manifests: |
+          manifests/deployment-1.yml
+          manifests/service-1.yml
+          manifests/ingress-1.yml
+        images: |
+          aks01reg.azurecr.io/aks01:${{ github.sha }}
+        imagepullsecrets: |
+          aks01dockerauth
